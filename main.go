@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -26,17 +24,18 @@ var (
 func main() {
 	h := iniHandler()
 	hosts = h.InitHosts()
-	r := mux.NewRouter()
-	r.HandleFunc("/", redirect).Methods(http.MethodGet)
-	r.HandleFunc("/reload", reload).Methods(http.MethodGet)
+
+	http.HandleFunc("/", redirect)
+	http.HandleFunc("/reload", reload)
 
 	log.Printf("start on port %v\n", os.Getenv("PORT"))
-	if err:=http.ListenAndServe(os.Getenv("PORT"), cors.Default().Handler(r)); err!= nil {
+	if err:=http.ListenAndServe(os.Getenv("PORT"), nil); err!= nil {
 		 panic(err)
 	}
 }
 
 func redirect(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	path := getHost(r.URL.Path[1:]) //hosts[r.URL.Path[1:]]
 	if len(path)==0{
 		w.Write([]byte("Not found host on path " + r.URL.Path))
@@ -53,6 +52,10 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	r.URL.Path = "/v3/api-docs"
 	fmt.Printf("host is ======= %v\n",r.RequestURI)
 	p.ServeHTTP(w, r)
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func getHost(path string) string{
