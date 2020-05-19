@@ -33,7 +33,7 @@ func main() {
 }
 
 func redirect(w http.ResponseWriter, r *http.Request) {
-	path := hosts[r.URL.Path]
+	path := hosts[r.URL.Path[1:]]
 	if len(path)==0{
 		w.Write([]byte("Not found host on path " + r.URL.Path))
 		return
