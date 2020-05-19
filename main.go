@@ -38,7 +38,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Not found host on path " + r.URL.Path))
 		return
 	}
-	u,_ := url.Parse("http://" + path)
+	u,_ := url.Parse(path)
 	p := httputil.NewSingleHostReverseProxy(u)
 	fmt.Printf("host %v\n", r.Header.Get(host))
 	r.URL.Host = u.Host
