@@ -64,7 +64,7 @@ func (t *vaultTask) initHost(i interface{},name string) {
 	if m.Kind() == reflect.Map{
 		for _,key := range m.MapKeys(){
 			rs := m.MapIndex(key)
-			if key.Interface() == "ip"{
+			if key.Interface() == "url"{
 				t.hosts[name] = rs.Interface().(string)
 			}
 		}
