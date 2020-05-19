@@ -22,11 +22,12 @@ var (
 
 func main() {
 	h := iniHandler()
-	hosts = h.InitHosts() //map[string]string{"/test":"http://127.0.0.1:8088"}
+	hosts = h.InitHosts()
 
 	http.HandleFunc("/", redirect)
 	http.HandleFunc("/reload", reload)
-	if err:=http.ListenAndServe(":9991", nil); err!= nil {
+	log.Printf("start on port %v\n", os.Getenv("PORT"))
+	if err:=http.ListenAndServe(os.Getenv("PORT"), nil); err!= nil {
 		 panic(err)
 	}
 }
@@ -48,7 +49,8 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func reload(w http.ResponseWriter, r *http.Request) {
-	hosts = map[string]string{"/test":"http://127.0.0.1:8088", "/test2":"http://127.0.0.1:8088"}   //h.InitHosts()
+	h := iniHandler()
+	hosts = h.InitHosts()
 	if _, err:=w.Write([]byte("Reload config successfully")); err != nil {
 		log.Printf("Exception while generate resp %v\n", err.Error())
 	}
