@@ -27,8 +27,8 @@ func main() {
 	h := iniHandler()
 	hosts = h.InitHosts()
 	r := mux.NewRouter()
-	r.HandleFunc("/", redirect)
-	r.HandleFunc("/reload", reload)
+	r.HandleFunc("/", redirect).Methods(http.MethodGet)
+	r.HandleFunc("/reload", reload).Methods(http.MethodGet)
 
 	log.Printf("start on port %v\n", os.Getenv("PORT"))
 	if err:=http.ListenAndServe(os.Getenv("PORT"), cors.Default().Handler(r)); err!= nil {
