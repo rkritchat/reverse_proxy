@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -38,7 +39,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	}
 	u,_ := url.Parse(path)
 	p := httputil.NewSingleHostReverseProxy(u)
-
+	fmt.Printf("host %v\n", r.Header.Get(host))
 	r.URL.Host = u.Host
 	r.URL.Scheme = u.Scheme
 	r.Header.Set(forwardedHost, r.Header.Get(host))

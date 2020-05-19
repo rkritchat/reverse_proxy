@@ -8,9 +8,9 @@ import (
 )
 
 type vaultTask struct {
-	VaultAddr string
-	VaultToken string
-	Environment string
+	vaultAddr string
+	vaultToken string
+	environment string
 	c *api.Logical
 	paths []interface{}
 	hosts map[string]string
@@ -41,7 +41,7 @@ func (t *vaultTask) initMap(){
 	for _,v := range t.paths {
 		if str, ok := v.(string);ok{
 			log.Printf("seach on path %v\n", str)
-			read, err := t.c.Read("secret/data/dev/"+str+"/jenkins")
+			read, err := t.c.Read("secret/data/"+t.environment+"/"+str+"/jenkins")
 			if err!=nil{
 				log.Printf("Cannot Read data on path %v\n", str)
 				continue
@@ -76,15 +76,15 @@ func (t *vaultTask) initClient(conf *api.Config) error{
 	if err!= nil {
 		return err
 	}
-	client.SetToken(t.VaultToken)
+	client.SetToken(t.vaultToken)
 	t.c = client.Logical()
 	return nil
 }
 
 func (t *vaultTask) initTask(h *Handler){
-	t.VaultAddr = h.VaultAddr
-	t.VaultToken = h.VaultToken
-	t.Environment = h.Environment
+	t.vaultAddr = h.VaultAddr
+	t.vaultToken = h.VaultToken
+	t.environment = h.Environment
 }
 
 func (t *vaultTask) initParentPath(){
@@ -104,6 +104,6 @@ func (t *vaultTask) initParentPath(){
 
 func (t *vaultTask) initConfig() *api.Config {
 	return &api.Config{
-		Address: t.VaultAddr,
+		Address: t.vaultAddr,
 	}
 }
