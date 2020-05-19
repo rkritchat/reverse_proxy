@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"os"
 	"reverse-proxy/service"
+	"strings"
 )
 
 const(
@@ -33,7 +34,7 @@ func main() {
 }
 
 func redirect(w http.ResponseWriter, r *http.Request) {
-	path := hosts[r.URL.Path[1:]]
+	path := getHost(r.URL.Path[1:]) //hosts[r.URL.Path[1:]]
 	if len(path)==0{
 		w.Write([]byte("Not found host on path " + r.URL.Path))
 		return
@@ -46,6 +47,15 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	r.Header.Set(forwardedHost, r.Header.Get(host))
 	r.Host = u.Host
 	p.ServeHTTP(w, r)
+}
+
+func getHost(path string) string{
+	for k,v := range hosts{
+		if strings.Contains(path,k){
+			return v
+		}
+	}
+	return ""
 }
 
 func reload(w http.ResponseWriter, r *http.Request) {
