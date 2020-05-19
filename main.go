@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -24,11 +26,12 @@ var (
 func main() {
 	h := iniHandler()
 	hosts = h.InitHosts()
+	r := mux.NewRouter()
+	r.HandleFunc("/", redirect)
+	r.HandleFunc("/reload", reload)
 
-	http.HandleFunc("/", redirect)
-	http.HandleFunc("/reload", reload)
 	log.Printf("start on port %v\n", os.Getenv("PORT"))
-	if err:=http.ListenAndServe(os.Getenv("PORT"), nil); err!= nil {
+	if err:=http.ListenAndServe(os.Getenv("PORT"), cors.Default().Handler(r)); err!= nil {
 		 panic(err)
 	}
 }
