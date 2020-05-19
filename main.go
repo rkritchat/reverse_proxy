@@ -46,7 +46,7 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	r.URL.Scheme = u.Scheme
 	r.Header.Set(forwardedHost, r.Header.Get(host))
 	r.Host = u.Host
-	r.RequestURI = os.Getenv("TARGET_URI")
+	r.RequestURI = "/v3/api-docs"
 	fmt.Printf("host is ======= %v\n",r.RequestURI)
 	p.ServeHTTP(w, r)
 }
